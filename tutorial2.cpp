@@ -21,13 +21,12 @@
 #include "clang/Lex/Preprocessor.h"
 
 
-int main()
-{
+int main() {
 	clang::DiagnosticOptions diagnosticOptions;
 	clang::TextDiagnosticPrinter *pTextDiagnosticPrinter =
-		new clang::TextDiagnosticPrinter(
-			llvm::outs(),
-			diagnosticOptions);
+	    new clang::TextDiagnosticPrinter(
+	    llvm::outs(),
+	    diagnosticOptions);
 	llvm::IntrusiveRefCntPtr<clang::DiagnosticIDs> pDiagIDs;
 	// THis cannot be right
 	clang::Diagnostic diagnostic(pDiagIDs, pTextDiagnosticPrinter);
@@ -37,42 +36,41 @@ int main()
 	clang::FileManager fileManager(fileSystemOptions);
 
 	clang::SourceManager sourceManager(
-        diagnostic,
-        fileManager);
+	    diagnostic,
+	    fileManager);
 	clang::HeaderSearch headerSearch(fileManager);
 
 	clang::TargetOptions targetOptions;
 	targetOptions.Triple = llvm::sys::getHostTriple();
 
-	clang::TargetInfo *pTargetInfo = 
-		clang::TargetInfo::CreateTargetInfo(
-			diagnostic,
-			targetOptions);
+	clang::TargetInfo *pTargetInfo =
+	    clang::TargetInfo::CreateTargetInfo(
+	        diagnostic,
+	        targetOptions);
 
 	clang::Preprocessor preprocessor(
-		diagnostic,
-		languageOptions,
-		*pTargetInfo,
-		sourceManager,
-		headerSearch);
+	    diagnostic,
+	    languageOptions,
+	    *pTargetInfo,
+	    sourceManager,
+	    headerSearch);
 
 
 	const clang::FileEntry *pFile = fileManager.getFile("test.c");
 	sourceManager.createMainFileID(pFile);
 	preprocessor.EnterMainSourceFile();
-    pTextDiagnosticPrinter->BeginSourceFile(languageOptions, &preprocessor);
+	pTextDiagnosticPrinter->BeginSourceFile(languageOptions, &preprocessor);
 
 	clang::Token token;
 	do {
 		preprocessor.Lex(token);
-		if( diagnostic.hasErrorOccurred())
-		{
+		if (diagnostic.hasErrorOccurred()) {
 			break;
 		}
 		preprocessor.DumpToken(token);
 		std::cerr << std::endl;
-	} while( token.isNot(clang::tok::eof));
-    pTextDiagnosticPrinter->EndSourceFile();
+	} while (token.isNot(clang::tok::eof));
+	pTextDiagnosticPrinter->EndSourceFile();
 
 	return 0;
 }

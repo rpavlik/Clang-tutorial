@@ -22,41 +22,40 @@
 #include "clang/Lex/Preprocessor.h"
 
 
-int main()
-{
+int main() {
 	clang::DiagnosticOptions diagnosticOptions;
 	clang::TextDiagnosticPrinter *pTextDiagnosticPrinter =
-		new clang::TextDiagnosticPrinter(
-			llvm::outs(),
-			diagnosticOptions);
+	    new clang::TextDiagnosticPrinter(
+	    llvm::outs(),
+	    diagnosticOptions);
 	llvm::IntrusiveRefCntPtr<clang::DiagnosticIDs> pDiagIDs;
 	//clang::DiagnosticIDs diagIDs;
-	
+
 	clang::Diagnostic diagnostic(pDiagIDs, pTextDiagnosticPrinter); // THis cannot be right
 
 	clang::LangOptions languageOptions;
 	clang::FileSystemOptions fileSystemOptions;
 	clang::FileManager fileManager(fileSystemOptions);
-\
+	\
 	clang::SourceManager sourceManager(
-        diagnostic,
-        fileManager);
+	    diagnostic,
+	    fileManager);
 	clang::HeaderSearch headerSearch(fileManager);
 
 	clang::TargetOptions targetOptions;
 	targetOptions.Triple = llvm::sys::getHostTriple();
 
-	clang::TargetInfo *pTargetInfo = 
-		clang::TargetInfo::CreateTargetInfo(
-			diagnostic,
-			targetOptions);
+	clang::TargetInfo *pTargetInfo =
+	    clang::TargetInfo::CreateTargetInfo(
+	        diagnostic,
+	        targetOptions);
 
 	clang::Preprocessor preprocessor(
-		diagnostic,
-		languageOptions,
-		*pTargetInfo,
-		sourceManager,
-		headerSearch);
+	    diagnostic,
+	    languageOptions,
+	    *pTargetInfo,
+	    sourceManager,
+	    headerSearch);
 
 	return 0;
 }
